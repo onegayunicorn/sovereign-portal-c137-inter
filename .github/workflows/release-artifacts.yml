@@ -1,0 +1,123 @@
+name: Release Artifacts
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  website:
+    name: Package website bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Assemble website artifact
+        run: |
+          mkdir -p release/website
+          cp -r apps/web-portal/* release/website/
+
+      - name: Compute SHA-256
+        run: |
+          cd release/website
+          find . -type f -print0 | sort -z | xargs -0 sha256sum > ../website-SHA256.txt
+
+      - name: Zip website
+        run: |
+          cd release
+          zip -r website.zip website
+
+      - name: Upload website artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-website
+          path: |
+            release/website.zip
+            release/website-SHA256.txt
+
+  windows:
+    name: Package Windows executables
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Windows artifacts from latest run
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: windows-portable-installers
+          path: release/windows
+
+      - name: Compute SHA-256 for Windows
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path release\windows | Out-Null
+          $files = Get-ChildItem -Path release\windows -Recurse -File -Filter *.exe
+          $lines = @()
+          foreach ($f in $files) {
+            $h = (Get-FileHash -Path $f.FullName -Algorithm SHA256).Hash
+            $lines += "$h  $($f.Name)"
+          }
+          if ($lines.Count -eq 0) { $lines += "# no windows executables present in this run" }
+          $lines | Out-File -FilePath release\windows\SHA256.txt -Encoding ascii
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-windows
+          path: release/windows/**
+          if-no-files-found: warn
+
+  android:
+    name: Package Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Android artifacts from latest run
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: android-apk
+          path: release/android
+
+      - name: Compute SHA-256 for APKs
+        run: |
+          mkdir -p release/android
+          find release/android -name "*.apk" -print0 | xargs -0 -r sha256sum > release/android/SHA256.txt || \
+            echo "# no apk present in this run" > release/android/SHA256.txt
+
+      - name: Upload Android artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-android
+          path: release/android/**
+          if-no-files-found: warn
+
+  publish:
+    name: Publish GitHub Release
+    needs: [website, windows, android]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release
+
+      - name: Consolidate SHA256 manifest
+        run: |
+          find release -name "SHA256*.txt" -type f -exec cat {} \; | sort -u > release/ALL-SHA256.txt
+          cat release/ALL-SHA256.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            release/**/website.zip
+            release/**/*.exe
+            release/**/*.apk
+            release/ALL-SHA256.txt

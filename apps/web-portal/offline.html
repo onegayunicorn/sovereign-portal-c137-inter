@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Portal C-137 // Offline</title>
+  <meta name="theme-color" content="#00ff88">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --portal-green: #00ff88;
+      --portal-yellow: #d4ff00;
+      --portal-void: #020b05;
+      --hud-cyan: #00e5ff;
+      --hud-border: rgba(0, 255, 136, 0.35);
+      --font-mono: "SF Mono", "Fira Code", "Consolas", "Courier New", monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      color: var(--portal-green);
+      font-family: var(--font-mono);
+      background: radial-gradient(circle at center, rgba(0, 40, 15, 0.55) 0%, var(--portal-void) 100%);
+    }
+    .panel {
+      width: 100%;
+      max-width: 420px;
+      padding: 26px;
+      background: rgba(2, 18, 8, 0.8);
+      border: 1px solid var(--portal-green);
+      border-radius: 8px;
+      box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 12px;
+      font-size: 15px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px var(--portal-green);
+    }
+    p { margin-bottom: 10px; font-size: 12.5px; line-height: 1.6; color: #cfe9dd; }
+    .diag {
+      margin: 16px 0;
+      padding: 10px;
+      font-size: 11px;
+      text-align: left;
+      color: var(--hud-cyan);
+      border: 1px dashed var(--hud-border);
+      border-radius: 4px;
+    }
+    .diag span { color: var(--portal-yellow); }
+    button {
+      padding: 9px 18px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--portal-void);
+      text-transform: uppercase;
+      cursor: pointer;
+      background: var(--portal-green);
+      border: 0;
+      border-radius: 4px;
+    }
+    button:hover { box-shadow: 0 0 14px var(--portal-green); }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>Portal C-137 // Offline</h1>
+    <p>The dimensional uplink is severed, but the local core is intact.</p>
+    <p>All rendering engines, shaders and the sovereign HUD continue to run with zero network access.</p>
+    <div class="diag">
+      CACHE: <span>portal-sovereign-v1</span><br>
+      MODE: <span>LOCAL-FIRST</span><br>
+      TELEMETRY: <span>ZERO EGRESS</span>
+    </div>
+    <button onclick="location.reload()">Re-establish Link</button>
+  </div>
+</body>
+</html>

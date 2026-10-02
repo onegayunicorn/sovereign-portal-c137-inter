@@ -1,0 +1,28 @@
+appId: dev.sovereign.portal.desktop
+productName: SovereignPortalC137
+directories:
+  output: dist-electron
+  buildResources: build
+files:
+  - dist/**/*
+  - main.js
+  - preload.js
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  icon: build/icon.ico
+  legalTrademarks: "Sovereign AI Labs"
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  deleteAppDataOnUninstall: true
+portable:
+  splashImage: build/splash.png

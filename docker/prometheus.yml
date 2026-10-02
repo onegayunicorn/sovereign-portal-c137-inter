@@ -1,0 +1,38 @@
+# =============================================================================
+# Sovereign Portal C-137 — Prometheus scrape configuration
+# =============================================================================
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: sovereign-portal-c137
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets:
+          - localhost:9090
+
+  - job_name: soe-orchestrator
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - sovereign-orchestrator:8000
+        labels:
+          component: soe-core
+
+  - job_name: portal-gateway
+    metrics_path: /audit/verify
+    static_configs:
+      - targets:
+          - sovereign-orchestrator:8000
+        labels:
+          component: merkle-audit
+
+  - job_name: llm-core
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - llm-core:11434
+        labels:
+          component: ollama

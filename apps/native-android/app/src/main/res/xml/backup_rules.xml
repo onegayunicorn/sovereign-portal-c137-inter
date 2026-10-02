@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 and below: Auto Backup configuration (android:fullBackupContent). -->
+<full-backup-content>
+    <include domain="sharedpref" path="." />
+    <include domain="file" path="portal_state/" />
+    <exclude domain="sharedpref" path="sovereign_secure_keys.xml" />
+</full-backup-content>

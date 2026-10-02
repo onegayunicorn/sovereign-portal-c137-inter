@@ -1,0 +1,35 @@
+[apk] Sovereign Portal C-137 - Android APK assembler (Gradle-free)
+[apk] app id      : com.rickc137.portal
+[apk] version     : 1.0.0 (1)
+[apk] sdk         : min 24 / target 34
+[apk] website     : C:\Users\tpowe\AccioWork\2026-10-02-00-22-50-856-cd998382\sovereign-portal-c137\dist\website
+[apk] jdk         : C:\Users\tpowe\AccioWork\2026-10-02-00-22-50-856-cd998382\_toolchain\jdk
+[apk] android sdk : C:\Users\tpowe\AccioWork\2026-10-02-00-22-50-856-cd998382\_toolchain\android-sdk
+[apk] build-tools : C:\Users\tpowe\AccioWork\2026-10-02-00-22-50-856-cd998382\_toolchain\android-sdk\build-tools\34.0.0
+[apk] work tree   : C:\Users\tpowe\AppData\Local\Temp\c137-apk-hpkzxpj2
+[apk] injected manifest package attribute: com.rickc137.portal
+[apk] patched theme parent: Theme.AppCompat.NoActionBar -> android:Theme.Material.NoActionBar
+[apk] patched AppCompat color attributes to their android: equivalents
+[apk] added mipmap-hdpi/ic_launcher.png fallback for API 24-25
+[apk] assets      : 9 file(s) bundled into the APK
+[apk] aapt2 compile: resources
+[apk] aapt2 link: manifest + resources + assets
+[apk] aapt2 link  : unsigned.apk = 241,018 bytes
+[apk] javac: compiling 2 source file(s)
+[apk] javac: produced 12 class file(s)
+[apk] d8: dexing 12 class file(s)
+[apk] d8: classes.dex = 14,536 bytes
+[apk] packaged classes.dex into packaged.apk
+[apk] zipalign: 4-byte aligning
+[apk] keytool: generating debug keystore
+[apk] apksigner: signing
+[apk] apksigner: verifying
+[apk] 
+[apk] ========================================================================
+[apk] APK         : C:\Users\tpowe\AccioWork\2026-10-02-00-22-50-856-cd998382\sovereign-portal-c137\dist\android\SovereignPortalC137.apk
+[apk] size        : 263,623 bytes (0.25 MB)
+[apk] sha256      : 7c4f3e1b7d0caec92b75ff17308a0848b8eb87e2f39194042f00018126142d64
+[apk] checksum    : C:\Users\tpowe\AccioWork\2026-10-02-00-22-50-856-cd998382\sovereign-portal-c137\dist\android\SovereignPortalC137.apk.SHA256.txt
+[apk] signature   : Verifies
+[apk] install     : adb install -r SovereignPortalC137.apk
+[apk] ========================================================================

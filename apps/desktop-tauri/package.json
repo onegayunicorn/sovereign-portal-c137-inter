@@ -1,0 +1,25 @@
+{
+  "name": "@portal/desktop-tauri",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tauri v2 Rust native desktop shell for Sovereign Portal C-137 (Windows .exe/.msi, macOS .dmg, Linux .AppImage)",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build --target x86_64-pc-windows-msvc",
+    "tauri:build:portable": "tauri build --target x86_64-pc-windows-msvc --bundles nsis,portable",
+    "icons": "python src-tauri/icons/make_icons.py",
+    "clean": "cargo clean --manifest-path src-tauri/Cargo.toml"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-shell": "^2.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}

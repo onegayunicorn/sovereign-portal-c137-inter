@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Sovereign Portal C-137">
+  <defs>
+    <radialGradient id="void" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#04140a"/>
+      <stop offset="100%" stop-color="#020b05"/>
+    </radialGradient>
+    <radialGradient id="core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d4ff00" stop-opacity="0.95"/>
+      <stop offset="45%" stop-color="#00ff88" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00ff88"/>
+      <stop offset="55%" stop-color="#d4ff00"/>
+      <stop offset="100%" stop-color="#00e5ff"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#void)"/>
+  <circle cx="256" cy="256" r="180" fill="url(#core)"/>
+
+  <g filter="url(#glow)" fill="none" stroke="url(#ring)">
+    <circle cx="256" cy="256" r="174" stroke-width="16"/>
+    <circle cx="256" cy="256" r="140" stroke-width="6" stroke-opacity="0.65"/>
+    <ellipse cx="256" cy="256" rx="174" ry="70" stroke-width="4" stroke-opacity="0.45"/>
+    <ellipse cx="256" cy="256" rx="70" ry="174" stroke-width="4" stroke-opacity="0.45"/>
+  </g>
+
+  <circle cx="256" cy="256" r="26" fill="#d4ff00" opacity="0.9"/>
+</svg>

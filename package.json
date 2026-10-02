@@ -1,0 +1,41 @@
+{
+  "name": "sovereign-portal-c137",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rick C-137 Sovereign AI Portal Interface // Twin Portal — Turborepo monorepo",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20.18.0",
+    "pnpm": ">=9.0.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean",
+    "db:generate": "turbo run db:generate",
+    "db:push": "turbo run db:push",
+    "soe:audit": "python apps/soe-core/run_audit.py",
+    "soe:test": "python -m pytest apps/soe-core/tests -q",
+    "soe:serve": "python apps/soe-core/desktop_launcher.py",
+    "portal:serve": "python -m http.server 8080 --directory apps/web-portal",
+    "portal:build": "node tools/build-portal.mjs",
+    "exe:build": "powershell -ExecutionPolicy Bypass -File windows/build-exe.ps1",
+    "apk:build": "python tools/build_apk.py",
+    "paf:build": "python apps/portable-builder/paf_builder.py --source apps/web-portal --output Builds/paf",
+    "models:download": "python tools/download_models.py",
+    "dist": "node tools/make-dist.mjs"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.0",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.3"
+  }
+}

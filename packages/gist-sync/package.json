@@ -1,0 +1,29 @@
+{
+  "name": "@portal/gist-sync",
+  "version": "1.0.0",
+  "description": "Sovereign Portal C-137 — GitHub Gist state export/import (anonymous + token modes)",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/gist-client.ts",
+    "./coordinate-pack": "./src/coordinate-pack.ts"
+  },
+  "files": ["src"],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist .turbo"
+  },
+  "devDependencies": {
+    "@portal/tsconfig": "workspace:*",
+    "@types/node": "^22.10.5",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

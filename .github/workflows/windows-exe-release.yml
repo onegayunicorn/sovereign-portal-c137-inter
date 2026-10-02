@@ -1,0 +1,108 @@
+name: Windows PC Executable Build & Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build-windows-exe:
+    name: Tauri v2 standalone .exe + NSIS setup
+    runs-on: windows-2022
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup Rust Stable Toolchain (for Tauri v2)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Web Application Bundle
+        run: pnpm --filter @portal/web-pwa build
+
+      - name: Build Tauri v2 Standalone Windows .EXE & NSIS Setup
+        run: pnpm --filter desktop-tauri tauri build --target x86_64-pc-windows-msvc
+
+      - name: Compute SHA-256 Checksums
+        shell: pwsh
+        run: |
+          $dir = "apps/desktop-tauri/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis"
+          Get-ChildItem -Path "$dir/*.exe" | ForEach-Object {
+            $hash = (Get-FileHash -Path $_.FullName -Algorithm SHA256).Hash
+            "$hash  $($_.Name)" | Out-File -FilePath "$($_.DirectoryName)\SHA256.txt" -Encoding ascii
+          }
+
+      - name: Upload Windows Executables Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-pc-executables
+          path: |
+            apps/desktop-tauri/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+            apps/desktop-tauri/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/SHA256.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+  build-portable-exe:
+    name: PyInstaller .exe + NSIS installer (windows/)
+    runs-on: windows-2022
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build dependencies
+        run: python -m pip install --upgrade pip pyinstaller numpy
+
+      - name: Build standalone .exe (bundles the website)
+        shell: pwsh
+        run: pwsh -File windows/build-exe.ps1
+
+      - name: Install NSIS
+        run: choco install nsis -y --no-progress
+
+      - name: Compile NSIS installer
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist\windows\assets | Out-Null
+          if (Test-Path assets\icon.ico) { Copy-Item assets\icon.ico dist\windows\assets\icon.ico }
+          & "C:\Program Files (x86)\NSIS\makensis.exe" windows\installer.nsi
+          if ($LASTEXITCODE -ne 0) { throw "makensis failed" }
+
+      - name: Compute SHA-256 for installer
+        shell: pwsh
+        run: |
+          if (Test-Path PortalC137_Setup_x64.exe) {
+            $h = (Get-FileHash -Path PortalC137_Setup_x64.exe -Algorithm SHA256).Hash
+            "$h  PortalC137_Setup_x64.exe" | Out-File -FilePath dist\windows\SHA256.txt -Encoding ascii
+          }
+
+      - name: Upload portable installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-portable-installers
+          path: |
+            PortalC137_Setup_x64.exe
+            dist/windows/*.exe
+            dist/windows/SHA256.txt
+          if-no-files-found: warn
+          retention-days: 30

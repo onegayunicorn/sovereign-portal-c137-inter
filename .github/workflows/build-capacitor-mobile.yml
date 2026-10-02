@@ -1,0 +1,100 @@
+name: Build Capacitor Mobile
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build-web:
+    name: Build web assets for mobile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web PWA
+        run: pnpm --filter @portal/web-pwa run build
+
+      - name: Upload web assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: capacitor-web-assets
+          path: apps/web-pwa/dist
+          if-no-files-found: error
+          retention-days: 7
+
+  build-android:
+    name: Build Android APK
+    needs: build-web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web assets
+        run: pnpm --filter @portal/web-pwa run build
+
+      - name: Capacitor sync (Android)
+        run: |
+          npx cap sync android
+        working-directory: apps/mobile-capacitor
+
+      - name: Gradle assembleRelease
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleRelease --no-daemon
+        working-directory: apps/mobile-capacitor/android
+
+      - name: Compute SHA-256 for APK
+        run: |
+          find apps/mobile-capacitor/android/app/build/outputs/apk -name "*.apk" -print0 \
+            | xargs -0 sha256sum > apps/mobile-capacitor/android/app/build/outputs/apk/SHA256.txt || true
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: |
+            apps/mobile-capacitor/android/app/build/outputs/apk/**/*.apk
+            apps/mobile-capacitor/android/app/build/outputs/apk/SHA256.txt
+          if-no-files-found: warn
+          retention-days: 14

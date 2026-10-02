@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Sovereign Portal C-137">
+  <title>Sovereign Portal C-137</title>
+
+  <defs>
+    <radialGradient id="core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d4ff00" stop-opacity="0.95" />
+      <stop offset="38%" stop-color="#00ff88" stop-opacity="0.85" />
+      <stop offset="72%" stop-color="#00b25e" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#020b05" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00ff88" />
+      <stop offset="50%" stop-color="#d4ff00" />
+      <stop offset="100%" stop-color="#00e5ff" />
+    </linearGradient>
+
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Void field / rounded maskable canvas -->
+  <rect width="512" height="512" rx="96" fill="#020b05" />
+
+  <!-- Swirl vortex arms -->
+  <g filter="url(#glow)" opacity="0.9">
+    <path
+      d="M256 96c88 0 160 72 160 160 0 62-36 116-88 142 44-34 62-84 52-134-12-60-66-104-128-98-38 4-70 30-84 64 6-72 66-134 128-134z"
+      fill="url(#ring)"
+      opacity="0.55"
+    />
+    <path
+      d="M256 416c-88 0-160-72-160-160 0-62 36-116 88-142-44 34-62 84-52 134 12 60 66 104 128 98 38-4 70-30 84-64-6 72-66 134-128 134z"
+      fill="url(#ring)"
+      opacity="0.4"
+    />
+  </g>
+
+  <!-- Portal core -->
+  <circle cx="256" cy="256" r="132" fill="url(#core)" />
+  <circle cx="256" cy="256" r="150" fill="none" stroke="#00ff88" stroke-width="4" opacity="0.75" />
+  <circle cx="256" cy="256" r="186" fill="none" stroke="#00e5ff" stroke-width="2" stroke-dasharray="14 12" opacity="0.7" />
+  <circle cx="256" cy="256" r="222" fill="none" stroke="#d4ff00" stroke-width="1.5" stroke-dasharray="4 16" opacity="0.55" />
+
+  <!-- Reticle crosshair ticks -->
+  <g stroke="#00ff88" stroke-width="6" stroke-linecap="round" opacity="0.9">
+    <line x1="256" y1="34" x2="256" y2="70" />
+    <line x1="256" y1="442" x2="256" y2="478" />
+    <line x1="34" y1="256" x2="70" y2="256" />
+    <line x1="442" y1="256" x2="478" y2="256" />
+  </g>
+
+  <!-- Dimension code readout -->
+  <g font-family="Consolas, 'JetBrains Mono', monospace" text-anchor="middle" fill="#00ff88">
+    <text x="256" y="266" font-size="54" font-weight="700" letter-spacing="2">C-137</text>
+    <text x="256" y="300" font-size="22" letter-spacing="6" opacity="0.8">1207 Hz</text>
+  </g>
+</svg>

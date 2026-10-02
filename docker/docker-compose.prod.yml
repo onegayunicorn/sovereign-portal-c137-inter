@@ -1,0 +1,70 @@
+# =============================================================================
+# Sovereign Portal C-137 — production stack (blueprint §5)
+# llm-core (Ollama, NVIDIA GPU) + sovereign-orchestrator (SOE) + prometheus
+# Usage: docker compose -f docker/docker-compose.prod.yml up -d --build
+# =============================================================================
+version: "3.8"
+
+services:
+  llm-core:
+    image: ollama/ollama:latest
+    container_name: rick-llm-core
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      - ./ollama_storage:/root/.ollama
+      - ./ai/Modelfile.rick-c137:/root/Modelfile.rick-c137:ro
+    ports:
+      - "11434:11434"
+    networks:
+      - soe_mesh
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+
+  sovereign-orchestrator:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.orchestrator
+    container_name: soe-orchestrator
+    restart: always
+    environment:
+      - OLLAMA_HOST=http://llm-core:11434
+      - COHERENCE_THRESHOLD=0.999
+      - MERKLE_LOG_PATH=/data/merkle_audit.log
+    volumes:
+      - ./data:/data
+    ports:
+      - "8000:8000"
+    networks:
+      - soe_mesh
+    depends_on:
+      llm-core:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: soe-metrics
+    restart: always
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - promdata:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - soe_mesh
+
+networks:
+  soe_mesh:
+    driver: bridge
+
+volumes:
+  promdata:

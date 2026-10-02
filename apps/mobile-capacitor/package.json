@@ -1,0 +1,31 @@
+{
+  "name": "@portal/mobile-capacitor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Capacitor 6 mobile shell for Sovereign Portal C-137 (iOS + Android) with Haptics and Camera plugins",
+  "license": "MIT",
+  "scripts": {
+    "add:android": "cap add android",
+    "add:ios": "cap add ios",
+    "sync": "cap sync",
+    "sync:android": "cap sync android",
+    "sync:ios": "cap sync ios",
+    "copy": "cap copy",
+    "open:android": "cap open android",
+    "open:ios": "cap open ios",
+    "run:android": "cap run android",
+    "run:ios": "cap run ios",
+    "build:web": "pnpm --filter @portal/web-pwa build"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/camera": "^6.0.2",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/haptics": "^6.0.1",
+    "@capacitor/ios": "^6.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2",
+    "typescript": "^5.6.2"
+  }
+}

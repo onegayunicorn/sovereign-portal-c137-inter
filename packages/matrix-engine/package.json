@@ -1,0 +1,33 @@
+{
+  "name": "@portal/matrix-engine",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sovereign Portal C-137 matrix engine: GLSL portal/CRT/matrix-rain shaders, WebGL CanvasManager and WebAudio AudioReactor.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./shaders/portal.frag": "./src/shaders/portal.frag",
+    "./shaders/matrix-rain.frag": "./src/shaders/matrix-rain.frag",
+    "./shaders/crt-overlay.frag": "./src/shaders/crt-overlay.frag"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src --ext .ts",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "portal-c137",
+    "webgl",
+    "glsl",
+    "shader",
+    "webaudio"
+  ],
+  "license": "MIT"
+}

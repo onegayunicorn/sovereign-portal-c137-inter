@@ -1,0 +1,73 @@
+name: Build Tauri Desktop
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build-tauri:
+    name: Tauri v2 (${{ matrix.target }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            artifact: linux
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact: macos
+          - os: windows-2022
+            target: x86_64-pc-windows-msvc
+            artifact: windows
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop-tauri/src-tauri
+
+      - name: Install Linux system dependencies
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev \
+            librsvg2-dev patchelf libgtk-3-dev libayatana-appindicator3-dev
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web bundle
+        run: pnpm --filter @portal/web-pwa run build
+
+      - name: Build Tauri app
+        run: pnpm --filter desktop-tauri tauri build --target ${{ matrix.target }}
+
+      - name: Upload desktop bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: tauri-${{ matrix.artifact }}
+          path: apps/desktop-tauri/src-tauri/target/${{ matrix.target }}/release/bundle/**
+          if-no-files-found: warn
+          retention-days: 14

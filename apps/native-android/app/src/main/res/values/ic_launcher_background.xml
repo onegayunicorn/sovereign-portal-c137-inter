@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Adaptive icon background: portal void #020b05 -->
+    <color name="ic_launcher_background">#FF020B05</color>
+</resources>

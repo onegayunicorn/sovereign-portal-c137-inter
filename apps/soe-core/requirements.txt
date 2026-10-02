@@ -1,0 +1,26 @@
+# Sovereign Portal C-137 — SOE core + gateway + VoiceΩ (DSP)
+# Core runtime (required)
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+numpy==1.26.4
+
+# Verification / CI (required for tests)
+pytest==8.3.4
+httpx==0.28.1
+
+# Windows .exe packaging
+pyinstaller==6.11.1
+
+# ---------------------------------------------------------------------------
+# Optional extras — VoiceΩ full pipeline & cloud TTS backends.
+# The DSP core (phase_vocoder / pitch_shift) needs numpy only; these unlock
+# apply_personality, document ingestion, podcast mixing and neural TTS.
+# ---------------------------------------------------------------------------
+# librosa==0.10.2.post1
+# soundfile==0.12.1
+# openai==1.59.6
+# PyPDF2==3.0.1
+# python-docx==1.1.2
+# gtts==2.5.4
+# requests==2.32.3

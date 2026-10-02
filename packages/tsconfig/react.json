@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Sovereign Portal C-137 — React 19",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowJs": false,
+    "noEmit": true,
+    "types": ["vite/client"],
+    "paths": {
+      "@portal/ui-core": ["../../packages/ui-core/src/index.ts"],
+      "@portal/ui-core/*": ["../../packages/ui-core/src/*"]
+    }
+  }
+}

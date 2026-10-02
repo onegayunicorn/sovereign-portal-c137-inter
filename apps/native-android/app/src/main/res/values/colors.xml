@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sovereign Portal C-137 palette -->
+    <color name="portal_void">#FF020B05</color>
+    <color name="portal_green">#FF00FF88</color>
+    <color name="portal_yellow">#FFD4FF00</color>
+    <color name="hud_cyan">#FF00E5FF</color>
+    <color name="hud_alert">#FFFF0055</color>
+    <color name="hud_border">#5900FF88</color>
+</resources>

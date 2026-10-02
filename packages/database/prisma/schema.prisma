@@ -1,0 +1,94 @@
+// =============================================================================
+// Sovereign Portal C-137 — Cloud Relational Schema (PostgreSQL / Prisma ORM)
+// -----------------------------------------------------------------------------
+// Prisma is the SCHEMA AUTHORITY for the persistent, multi-tenant cloud plane.
+// Drizzle ORM (see ../drizzle/schema.ts) handles the zero-latency local SQLite
+// / WASM / libSQL-Edge plane. The two planes are reconciled by ../../src/sync-engine.ts.
+// =============================================================================
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+/// A dimension coordinate tracked by the Twin Portal (e.g. "C-137", "J-19Z7").
+model DimensionCoordinate {
+  id            String            @id @default(uuid())
+  dimensionCode String            @unique
+  stability     Float             @default(1.0)
+  resonanceHz   Int               @default(1207)
+  status        String            @default("ACTIVE") // ACTIVE | DORMANT | COLLAPSED
+  gistUrl       String?
+  telemetryLogs Json?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  telemetries   TelemetryRecord[]
+
+  @@index([dimensionCode])
+  @@index([status])
+  @@map("dimension_coordinates")
+}
+
+/// A single orchestrator / twin-agent / user telemetry event tied to a coordinate.
+model TelemetryRecord {
+  id           String              @id @default(uuid())
+  coordinateId String
+  coordinate   DimensionCoordinate @relation(fields: [coordinateId], references: [id], onDelete: Cascade)
+  actor        String              // "ORCHESTRATOR" | "TWIN_AGENT" | "USER"
+  message      String
+  meta         Json?
+  timestamp    DateTime            @default(now())
+
+  @@index([coordinateId])
+  @@index([timestamp])
+  @@map("telemetry_records")
+}
+
+/// A sovereign runtime session bound to a universe thread.
+model SovereignSession {
+  id            String         @id @default(uuid())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  universeId    String         @default("C-137")
+  portalHealth  Float          @default(0.985)
+  telemetryLogs TelemetryLog[]
+  gistSyncs     GistSync[]
+
+  @@index([universeId])
+  @@map("sovereign_sessions")
+}
+
+/// High-frequency coherence telemetry sampled during a sovereign session.
+model TelemetryLog {
+  id               String           @id @default(cuid())
+  sessionId        String
+  session          SovereignSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  timestamp        DateTime         @default(now())
+  coherenceScore   Float
+  dimensionalPhase String
+  metadata         Json?
+
+  @@index([sessionId])
+  @@index([timestamp])
+  @@map("telemetry_logs")
+}
+
+/// Bookkeeping record for each sovereign state export pushed to a GitHub Gist.
+model GistSync {
+  id           String           @id @default(cuid())
+  sessionId    String
+  session      SovereignSession @relation(fields: [sessionId], references: [id])
+  gistId       String
+  exportUrl    String
+  syncedAt     DateTime         @default(now())
+  recordsCount Int
+
+  @@index([sessionId])
+  @@index([gistId])
+  @@map("gist_syncs")
+}

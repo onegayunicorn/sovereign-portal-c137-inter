@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@portal/tsconfig/node.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "drizzle/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

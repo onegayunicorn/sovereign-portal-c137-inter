@@ -1,0 +1,263 @@
+/* ==========================================================================
+   @portal/hud-overlay-system — cybernetic HUD stylesheet
+   Sovereign Portal C-137 palette
+   ========================================================================== */
+
+:root {
+  --portal-green: #00ff88;
+  --portal-yellow: #d4ff00;
+  --hud-cyan: #00e5ff;
+  --hud-alert: #ff0055;
+  --void: #020b05;
+
+  --hud-panel: rgba(2, 11, 5, 0.72);
+  --hud-panel-solid: rgba(2, 11, 5, 0.92);
+  --hud-border: rgba(0, 255, 136, 0.35);
+  --hud-border-strong: rgba(0, 255, 136, 0.75);
+  --hud-glow: 0 0 18px rgba(0, 255, 136, 0.28);
+  --hud-glow-strong: 0 0 32px rgba(0, 255, 136, 0.45);
+  --hud-font: "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --hud-radius: 10px;
+}
+
+.hud-root {
+  color: var(--portal-green);
+  font-family: var(--hud-font);
+  font-variant-ligatures: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------- reticle --- */
+
+.hud-reticle {
+  position: relative;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hud-reticle__ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 50%;
+  border: 1px solid var(--hud-border);
+  box-shadow: var(--hud-glow);
+}
+
+.hud-reticle__ring--spin {
+  border-style: dashed;
+  animation: hud-reticle-spin 9s linear infinite;
+}
+
+.hud-reticle__ring--counter {
+  border-style: dotted;
+  border-color: var(--hud-cyan);
+  animation: hud-reticle-spin 6s linear infinite reverse;
+}
+
+.hud-reticle__core {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 255, 136, 0.9) 0%, rgba(0, 255, 136, 0) 70%);
+}
+
+.hud-reticle__tick {
+  position: absolute;
+  background: var(--portal-green);
+  opacity: 0.85;
+}
+
+@keyframes hud-reticle-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ---------------------------------------------------- scanline filter --- */
+
+.hud-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  mix-blend-mode: overlay;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, var(--hud-scanline-opacity, 0.22)) 3px,
+    rgba(0, 0, 0, 0) 4px
+  );
+}
+
+.hud-scanlines__sweep {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 255, 136, 0) 0%,
+    rgba(0, 255, 136, 0.09) 50%,
+    rgba(0, 255, 136, 0) 100%
+  );
+  animation: hud-scanline-sweep var(--hud-sweep-duration, 6s) linear infinite;
+}
+
+.hud-scanlines__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.65) 100%);
+}
+
+@keyframes hud-scanline-sweep {
+  0% { top: -25%; }
+  100% { top: 105%; }
+}
+
+/* ------------------------------------------------------ telemetry card --- */
+
+.hud-card {
+  background: var(--hud-panel);
+  border: 1px solid var(--hud-border);
+  border-radius: var(--hud-radius);
+  box-shadow: var(--hud-glow);
+  backdrop-filter: blur(8px);
+  padding: 12px 14px;
+  color: var(--portal-green);
+  font-family: var(--hud-font);
+  position: relative;
+  overflow: hidden;
+}
+
+.hud-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--portal-green), transparent);
+  opacity: 0.7;
+}
+
+.hud-card--alert { border-color: rgba(255, 0, 85, 0.65); box-shadow: 0 0 18px rgba(255, 0, 85, 0.3); }
+.hud-card--alert::before { background: linear-gradient(90deg, transparent, var(--hud-alert), transparent); }
+.hud-card--cyan { border-color: rgba(0, 229, 255, 0.55); }
+.hud-card--cyan::before { background: linear-gradient(90deg, transparent, var(--hud-cyan), transparent); }
+
+.hud-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hud-cyan);
+  margin-bottom: 8px;
+}
+
+.hud-card__value {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--portal-green);
+  text-shadow: 0 0 12px rgba(0, 255, 136, 0.45);
+}
+
+.hud-card__unit {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-left: 4px;
+}
+
+.hud-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.hud-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--portal-green);
+  box-shadow: 0 0 8px var(--portal-green);
+  animation: hud-pulse 1.6s ease-in-out infinite;
+}
+
+.hud-dot--alert { background: var(--hud-alert); box-shadow: 0 0 8px var(--hud-alert); }
+
+@keyframes hud-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.78); }
+}
+
+/* -------------------------------------------------------- waveform bar --- */
+
+.hud-waveform {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  min-height: 28px;
+}
+
+.hud-waveform__bar {
+  flex: 1 1 0;
+  min-width: 2px;
+  border-radius: 1px;
+  background: linear-gradient(to top, var(--portal-green) 0%, var(--portal-yellow) 100%);
+  box-shadow: 0 0 6px rgba(0, 255, 136, 0.5);
+  transition: height 70ms linear;
+}
+
+.hud-waveform__bar--alert {
+  background: linear-gradient(to top, var(--hud-alert) 0%, var(--portal-yellow) 100%);
+}
+
+/* ------------------------------------------------------ terminal prompt --- */
+
+.hud-terminal {
+  background: var(--hud-panel-solid);
+  border: 1px solid var(--hud-border);
+  border-radius: var(--hud-radius);
+  box-shadow: var(--hud-glow);
+  font-family: var(--hud-font);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--portal-green);
+  padding: 10px 12px;
+  max-height: 220px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.hud-terminal__line { display: block; }
+.hud-terminal__prompt { color: var(--hud-cyan); }
+.hud-terminal__warning { color: var(--portal-yellow); }
+.hud-terminal__error { color: var(--hud-alert); }
+.hud-terminal__caret {
+  display: inline-block;
+  width: 8px;
+  background: var(--portal-green);
+  animation: hud-caret 1s steps(2, start) infinite;
+}
+.hud-terminal__caret::after { content: "\00a0"; }
+
+@keyframes hud-caret {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.hud-terminal::-webkit-scrollbar { width: 6px; }
+.hud-terminal::-webkit-scrollbar-thumb { background: var(--hud-border-strong); border-radius: 3px; }

@@ -1,0 +1,55 @@
+WEBVTT - Sovereign Portal C-137 // Twin Portal interactive timeline
+NOTE
+Frame-accurate cue manifest consumed by VideoSyncEngine.
+Each cue's payload is encoded as a JSON object on the first line of the cue body,
+followed by the human-readable HUD label on the second line.
+
+1
+00:00:00.000 --> 00:00:06.000
+{"id":"cue-boot-telemetry","type":"telemetry_ping","coordinates":{"x":50,"y":12},"payload":{"label":"BOOT HANDSHAKE","dimensionCode":"C-137","meta":{"resonanceHz":1207,"stability":0.9987}}}
+Orchestrator online — dimension lock acquired.
+
+2
+00:00:06.000 --> 00:00:12.500
+{"id":"cue-hud-reticle","type":"hotspot","coordinates":{"x":38,"y":44},"payload":{"label":"SCAN CALIBRATION LENS","dimensionCode":"C-137","meta":{"targetZPlane":0.5}}}
+Examine the calibration lens.
+
+3
+00:00:12.500 --> 00:00:19.000
+{"id":"cue-fluid-chamber","type":"hotspot","coordinates":{"x":71,"y":52},"payload":{"label":"SCAN PORTAL FLUID","dimensionCode":"C-137","meta":{"fluidResonance":0.82}}}
+Examine the portal fluid chamber.
+
+4
+00:00:19.000 --> 00:00:26.000
+{"id":"cue-drift-warning","type":"telemetry_ping","coordinates":{"x":50,"y":14},"payload":{"label":"FLUX DECAY WARNING","dimensionCode":"C-137","meta":{"fluxDecay":0.0612,"statusFlag":"MONITOR"}}}
+Flux decay entering the monitored envelope.
+
+5
+00:00:26.000 --> 00:00:34.000
+{"id":"cue-branch-j19z7","type":"branch_choice","coordinates":{"x":50,"y":82},"payload":{"label":"DIMENSIONAL CHOICE POINT","dimensionCode":"J-19Z7","seekTarget":41.5,"meta":{"altSeekTarget":60.0}}}
+Dimensional branch: hold C-137 or jump to J-19Z7.
+
+6
+00:00:34.000 --> 00:00:41.500
+{"id":"cue-cv-track-rift","type":"cv_track","coordinates":{"x":46,"y":38,"width":12,"height":22},"payload":{"label":"RIFT TRACK","confidence":0.94,"box":{"x":46,"y":38,"width":12,"height":22},"meta":{"tracker":"portal-cv-v1"}}}
+Vision tracker locked onto the rift silhouette.
+
+7
+00:00:41.500 --> 00:00:48.000
+{"id":"cue-post-reset-telemetry","type":"telemetry_ping","coordinates":{"x":50,"y":12},"payload":{"label":"STRUCTURE STABLE","dimensionCode":"C-137","meta":{"coherence":0.9987,"statusFlag":"ACTIVE"}}}
+Portal test complete. Structure stable.
+
+8
+00:00:48.000 --> 00:00:56.000
+{"id":"cue-recalibrate","type":"hotspot","coordinates":{"x":62,"y":60},"payload":{"label":"RECALIBRATE RESONANCE","dimensionCode":"C-137","meta":{"targetResonanceHz":1207}}}
+Recalibrate the resonance array.
+
+9
+00:00:56.000 --> 00:01:04.000
+{"id":"cue-return-branch","type":"branch_choice","coordinates":{"x":50,"y":82},"payload":{"label":"DIMENSIONAL CHOICE POINT","dimensionCode":"C-137","seekTarget":0,"meta":{"altSeekTarget":26.0}}}
+Return to the C-137 baseline or repeat the drift sequence.
+
+10
+00:01:04.000 --> 00:01:09.000
+{"id":"cue-transmit-gist","type":"telemetry_ping","coordinates":{"x":78,"y":20},"payload":{"label":"TRANSMIT VIA GIST","dimensionCode":"C-137","meta":{"channel":"github-gist","sovereign":true}}}
+Telemetry snapshot sealed and ready to transmit.

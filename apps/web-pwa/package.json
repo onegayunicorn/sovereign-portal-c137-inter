@@ -1,0 +1,53 @@
+{
+  "name": "@portal/web-pwa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sovereign Portal C-137 — React 19 + Vite + TypeScript PWA (Twin Portal HUD, offline WebGPU AI, interactive video engine).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.78",
+    "@portal/graphics-engine": "workspace:*",
+    "@portal/hud-overlay-system": "workspace:*",
+    "@portal/matrix-engine": "workspace:*",
+    "@portal/offline-ai": "workspace:*",
+    "@portal/ui-core": "workspace:*",
+    "@portal/video-engine": "workspace:*",
+    "@react-three/drei": "^9.117.0",
+    "@react-three/fiber": "^9.1.0",
+    "@react-three/postprocessing": "^3.0.4",
+    "@xenova/transformers": "^2.17.2",
+    "drizzle-orm": "^0.38.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.173.0"
+  },
+  "devDependencies": {
+    "@portal/config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.173.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11",
+    "vite-plugin-pwa": "^0.21.1"
+  },
+  "engines": {
+    "node": ">=20.18.0"
+  },
+  "keywords": [
+    "portal-c137",
+    "pwa",
+    "react19",
+    "vite",
+    "webgpu"
+  ],
+  "license": "MIT"
+}

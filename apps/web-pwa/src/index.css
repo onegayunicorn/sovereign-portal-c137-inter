@@ -1,0 +1,355 @@
+/* ============================================================================
+   Sovereign Portal C-137 — global stylesheet for @portal/web-pwa
+   Design tokens live in @portal/ui-core; HUD widget styles live in
+   @portal/hud-overlay-system. This file imports both and adds app layout.
+   ========================================================================== */
+
+@import "../../../packages/ui-core/src/tokens.css";
+@import "../../../packages/hud-overlay-system/src/styles.css";
+
+/* ---------------------------------------------------------------- reset --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background-color: var(--portal-void, #020b05);
+  color: var(--portal-green, #00ff88);
+  font-family: var(--font-mono, "SF Mono", "Fira Code", "Courier New", monospace);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ------------------------------------------------------------ app shell --- */
+.portal-app {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.portal-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.portal-foreground {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 440px;
+  height: 100%;
+  max-height: 880px;
+  padding: 16px;
+  overflow: hidden;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 40, 15, 0.4) 0%,
+    rgba(1, 10, 4, 0.95) 100%
+  );
+  border: 1px solid var(--hud-border, rgba(0, 255, 136, 0.35));
+  box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+}
+
+/* ------------------------------------------------------------------ HUD --- */
+.telemetry-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--hud-border, rgba(0, 255, 136, 0.35));
+}
+
+.top-status-bar {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--hud-cyan, #00e5ff);
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title-row h1 {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px var(--portal-green, #00ff88);
+}
+
+.dimension-coords {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--portal-yellow, #d4ff00);
+}
+
+.badge-active {
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: bold;
+  color: var(--portal-green, #00ff88);
+  background: var(--portal-dim, rgba(0, 255, 136, 0.15));
+  border: 1px solid var(--portal-green, #00ff88);
+  border-radius: 2px;
+  animation: portal-pulse 2s infinite;
+}
+
+@keyframes portal-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 4px var(--portal-green, #00ff88);
+  }
+  50% {
+    opacity: 0.5;
+    box-shadow: none;
+  }
+}
+
+/* ------------------------------------------------------ orchestrator card --- */
+.orchestrator-card {
+  position: relative;
+  padding: 16px;
+  background: rgba(2, 18, 8, 0.75);
+  border: 1px solid var(--portal-green, #00ff88);
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 25px rgba(0, 255, 136, 0.15);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--hud-cyan, #00e5ff);
+  border-bottom: 1px dashed var(--hud-border, rgba(0, 255, 136, 0.35));
+}
+
+.terminal-output {
+  min-height: 50px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #ffffff;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+  white-space: pre-wrap;
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* --------------------------------------------------------------- buttons --- */
+.hud-btn {
+  padding: 6px 12px;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--portal-green, #00ff88);
+  text-transform: uppercase;
+  cursor: pointer;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid var(--portal-green, #00ff88);
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.hud-btn:hover:not(:disabled) {
+  color: var(--portal-void, #020b05);
+  background: var(--portal-green, #00ff88);
+  box-shadow: 0 0 10px var(--portal-green, #00ff88);
+}
+
+.hud-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.hud-btn-danger {
+  color: var(--hud-alert, #ff0055);
+  background: rgba(255, 0, 85, 0.1);
+  border-color: var(--hud-alert, #ff0055);
+}
+
+.hud-btn-danger:hover:not(:disabled) {
+  color: #fff;
+  background: var(--hud-alert, #ff0055);
+  box-shadow: 0 0 10px var(--hud-alert, #ff0055);
+}
+
+/* --------------------------------------------------------- audio waveform --- */
+#audio-meter,
+.audio-meter {
+  width: 100%;
+  height: 24px;
+  margin-top: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--hud-border, rgba(0, 255, 136, 0.35));
+}
+
+/* ------------------------------------------------------- command capsule --- */
+.command-hub {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-capsule {
+  display: flex;
+  align-items: center;
+  padding: 4px 6px;
+  background: rgba(2, 20, 9, 0.85);
+  border: 1px solid var(--portal-green, #00ff88);
+  border-radius: 24px;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+}
+
+.input-capsule input {
+  flex: 1;
+  padding: 8px 14px;
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  color: #fff;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.input-capsule input::placeholder {
+  color: rgba(0, 255, 136, 0.4);
+}
+
+.action-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+  color: var(--portal-green, #00ff88);
+  cursor: pointer;
+  background: var(--portal-dim, rgba(0, 255, 136, 0.15));
+  border: 1px solid var(--portal-green, #00ff88);
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.action-icon-btn:hover {
+  color: var(--portal-void, #020b05);
+  background: var(--portal-green, #00ff88);
+}
+
+.action-icon-btn.is-listening {
+  color: #fff;
+  background: var(--hud-alert, #ff0055);
+  border-color: var(--hud-alert, #ff0055);
+  animation: portal-pulse 1s infinite;
+}
+
+/* ------------------------------------------------------------ video stage --- */
+.video-stage {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #010804;
+  border: 1px solid var(--hud-border, rgba(0, 255, 136, 0.35));
+  border-radius: 8px;
+  aspect-ratio: 9 / 16;
+}
+
+.video-stage video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-stage .overlay-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.video-stage .interactive-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------- utilities --- */
+.portal-scroll {
+  overflow-y: auto;
+  scrollbar-color: var(--portal-green, #00ff88) transparent;
+  scrollbar-width: thin;
+}
+
+.portal-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.portal-scroll::-webkit-scrollbar-thumb {
+  background: var(--portal-green, #00ff88);
+  border-radius: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------- accessibility --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .portal-foreground {
+    max-width: 100%;
+    max-height: none;
+    border: none;
+    box-shadow: none;
+  }
+}

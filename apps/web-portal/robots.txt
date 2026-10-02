@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /models/
+
+# Sovereign Portal C-137 — zero telemetry deployment.
+# No analytics endpoints, no third-party trackers are used by this application.
+Sitemap: /sitemap.xml

@@ -1,0 +1,25 @@
+{
+  "name": "@portal/tsconfig",
+  "version": "1.0.0",
+  "description": "Sovereign Portal C-137 — shared TypeScript compiler configurations",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "base.json",
+    "react.json",
+    "node.json"
+  ],
+  "exports": {
+    "./base.json": "./base.json",
+    "./react.json": "./react.json",
+    "./node.json": "./node.json"
+  },
+  "scripts": {
+    "clean": "rimraf .turbo"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
+  }
+}

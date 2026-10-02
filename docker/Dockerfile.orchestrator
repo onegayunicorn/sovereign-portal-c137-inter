@@ -1,0 +1,39 @@
+# =============================================================================
+# Sovereign Portal C-137 — Orchestrator (SOE core) Runtime
+# Runs the Python Sovereign Orchestrator Engine + FastAPI telemetry gateway
+# from apps/soe-core, with a zero-bloat numpy-only core.
+# =============================================================================
+
+FROM python:3.11-slim AS runtime
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    MERKLE_LOG_PATH=/data/merkle_audit.log \
+    OLLAMA_HOST=http://llm-core:11434 \
+    COHERENCE_THRESHOLD=0.999
+
+WORKDIR /app
+
+# System deps kept minimal (curl for healthcheck only).
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends curl \
+  && rm -rf /var/lib/apt/lists/*
+
+# Dependency layer (cached independently of source).
+COPY apps/soe-core/requirements.txt ./requirements.txt
+RUN python -m pip install --no-cache-dir --upgrade pip \
+  && python -m pip install --no-cache-dir -r requirements.txt
+
+# Application source.
+COPY apps/soe-core ./soe-core
+RUN mkdir -p /data
+
+ENV PYTHONPATH=/app/soe-core
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD curl -fsS http://localhost:8000/audit/verify || exit 1
+
+# gateway.py exposes /telemetry/inject, /orchestrate/action, /audit/verify
+CMD ["python", "-m", "uvicorn", "gateway:app", "--host", "0.0.0.0", "--port", "8000"]

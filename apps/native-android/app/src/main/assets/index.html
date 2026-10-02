@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  PLACEHOLDER ASSET — SOVEREIGN PORTAL C-137 (native Android shell)
+  ----------------------------------------------------------------------------
+  This file is a build-time placeholder. During the real build the shipped
+  single-file portal (apps/web-portal/index.html / apps/web-pwa/dist) is copied
+  over this path and OVERWRITES it. The WebViewAssetLoader in MainActivity.kt
+  serves it from https://appassets.androidplatform.net/assets/index.html, so the
+  page runs on a real HTTPS origin with no file:// CORS restrictions.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Portal C-137 // Asset Loader Online</title>
+  <style>
+    :root { --portal-green: #00ff88; --portal-void: #020b05; --hud-cyan: #00e5ff; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      background: radial-gradient(circle at center, rgba(0,40,15,.4) 0%, rgba(1,10,4,.95) 100%);
+      color: var(--portal-green);
+      font-family: "SF Mono", "Fira Code", "Courier New", monospace;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+    }
+    .card { padding: 24px 28px; border: 1px solid rgba(0,255,136,.35); box-shadow: 0 0 40px rgba(0,255,136,.2); }
+    h1 { font-size: 16px; letter-spacing: .18em; margin: 0 0 12px; }
+    p { font-size: 12px; color: var(--hud-cyan); margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>RICK C-137 // SOVEREIGN PORTAL</h1>
+    <p>DIMENSION: C-137 &nbsp;|&nbsp; RESONANCE: 1207 Hz &nbsp;|&nbsp; STABILITY: 99.87%</p>
+    <p id="bridge">SovereignAndroidBridge: not probed</p>
+    <p id="hardened">SovereignBridge: not probed</p>
+  </div>
+  <script>
+    // Probe the two native bridge surfaces exposed by MainActivity.
+    function probe() {
+      var a = document.getElementById("bridge");
+      var b = document.getElementById("hardened");
+      a.textContent = "SovereignAndroidBridge: " + (typeof SovereignAndroidBridge !== "undefined" ? "MOUNTED" : "ABSENT");
+      b.textContent = "SovereignBridge: " + (typeof SovereignBridge !== "undefined" ? "MOUNTED" : "ABSENT");
+    }
+    probe();
+  </script>
+</body>
+</html>

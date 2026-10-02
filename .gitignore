@@ -1,0 +1,77 @@
+# ---------------------------------------------------------------- node ------
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-error.log*
+.pnp.*
+turbo/
+.turbo/
+
+# --------------------------------------------------------------- builds ------
+dist/
+build/
+out/
+.output/
+.vite/
+*.tsbuildinfo
+Builds/
+release/
+dist-electron/
+src-tauri/target/
+*.paf.exe
+
+# ------------------------------------------------------------ python ---------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage.xml
+htmlcov/
+sovereign_audit_results.json
+
+# ----------------------------------------------------------- packaging -------
+*.spec.bak
+*.apk.bak
+*.aab
+*.jks
+*.keystore
+local.properties
+
+# ---------------------------------------------------------------- env --------
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# --------------------------------------------------------- model weights -----
+apps/web-pwa/public/models/*
+!apps/web-pwa/public/models/README.md
+apps/web-portal/models/*
+libs/
+
+# ------------------------------------------------------------ editor ---------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ------------------------------------------------------------- android -------
+.gradle/
+captures/
+.externalNativeBuild/
+.cxx/
+apps/native-android/app/debug/
+apps/native-android/app/release/
+apps/mobile-capacitor/android/app/build/

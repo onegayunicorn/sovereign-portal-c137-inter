@@ -1,0 +1,54 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-cli/config.schema.json",
+  "productName": "SovereignPortalC137",
+  "version": "1.0.0",
+  "identifier": "dev.sovereign.portal.desktop",
+  "build": {
+    "frontendDist": "../../web/dist",
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "pnpm --filter=web dev",
+    "beforeBuildCommand": "pnpm --filter=web build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Rick C-137 Sovereign Portal Interface",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 1024,
+        "minHeight": 640,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": false,
+        "transparent": true,
+        "theme": "Dark",
+        "shadow": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' https: data: blob: 'unsafe-inline' 'wasm-unsafe-eval';"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "portable"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/256x256.png",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "http://timestamp.digicert.com",
+      "nsis": {
+        "installMode": "currentUser",
+        "displayLanguageSelector": false,
+        "languages": ["English"]
+      }
+    }
+  }
+}

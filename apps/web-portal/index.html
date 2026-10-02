@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- PWA: injected by the Sovereign Converter -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#00ff88">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Portal C-137">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <!-- /PWA -->
+  <meta charset="UTF-8">
+  <title>Rick C-137 Portal Interface // Twin Portal</title>
+  <meta name="description" content="Sovereign Interactive Rick C-137 Twin Portal Interface — offline WebGPU AI, WebGL vortex engine, orchestrator telemetry.">
+  <style>
+    :root {
+      --portal-green: #00ff88;
+      --portal-yellow: #d4ff00;
+      --portal-dim: rgba(0, 255, 136, 0.15);
+      --portal-void: #020b05;
+      --hud-cyan: #00e5ff;
+      --hud-alert: #ff0055;
+      --hud-border: rgba(0, 255, 136, 0.35);
+      --font-mono: "SF Mono", "Fira Code", "Consolas", "Courier New", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: var(--portal-void);
+      color: var(--portal-green);
+      font-family: var(--font-mono);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 9:16 Cyber HUD Viewport */
+    #hud-container {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      height: 100%;
+      max-height: 880px;
+      overflow: hidden;
+      background: radial-gradient(circle at center, rgba(0, 40, 15, 0.4) 0%, rgba(1, 10, 4, 0.95) 100%);
+      border: 1px solid var(--hud-border);
+      box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Layer 0: Matrix digital rain */
+    #matrix-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    /* Layer 1: WebGL portal vortex */
+    #vortex-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Layer 2: CRT scanline & chromatic overlay */
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+      background-size: 100% 4px;
+      opacity: 0.65;
+    }
+
+    /* Layer 3: UI content */
+    .ui-layer {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 16px;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    /* Corner reticle brackets */
+    .reticle-corner {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--portal-green);
+      opacity: 0.75;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .reticle-corner.tl { top: 8px; left: 8px; border-right: 0; border-bottom: 0; }
+    .reticle-corner.tr { top: 8px; right: 8px; border-left: 0; border-bottom: 0; }
+    .reticle-corner.bl { bottom: 8px; left: 8px; border-right: 0; border-top: 0; }
+    .reticle-corner.br { bottom: 8px; right: 8px; border-left: 0; border-top: 0; }
+
+    /* Header & telemetry */
+    .telemetry-header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-bottom: 1px solid var(--hud-border);
+      padding-bottom: 10px;
+    }
+
+    .top-status-bar {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--hud-cyan);
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .title-row h1 {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px var(--portal-green);
+    }
+
+    .badge-active {
+      background: var(--portal-dim);
+      border: 1px solid var(--portal-green);
+      color: var(--portal-green);
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 4px var(--portal-green); }
+      50% { opacity: 0.5; box-shadow: none; }
+    }
+
+    .dimension-coords {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--portal-yellow);
+    }
+
+    /* Central orchestrator card */
+    .orchestrator-card {
+      background: rgba(2, 18, 8, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--portal-green);
+      border-radius: 6px;
+      padding: 16px;
+      box-shadow: 0 0 25px rgba(0, 255, 136, 0.15);
+      position: relative;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--hud-cyan);
+      border-bottom: 1px dashed var(--hud-border);
+      padding-bottom: 6px;
+    }
+
+    .terminal-output {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #ffffff;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+      min-height: 50px;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .hud-btn {
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid var(--portal-green);
+      color: var(--portal-green);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      font-weight: bold;
+      border-radius: 3px;
+    }
+
+    .hud-btn:hover:not(:disabled) {
+      background: var(--portal-green);
+      color: var(--portal-void);
+      box-shadow: 0 0 10px var(--portal-green);
+    }
+
+    .hud-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .hud-btn-danger {
+      border-color: var(--hud-alert);
+      color: var(--hud-alert);
+      background: rgba(255, 0, 85, 0.1);
+    }
+
+    .hud-btn-danger:hover:not(:disabled) {
+      background: var(--hud-alert);
+      color: #fff;
+      box-shadow: 0 0 10px var(--hud-alert);
+    }
+
+    /* Waveform canvas */
+    #audio-meter {
+      width: 100%;
+      height: 24px;
+      margin-top: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--hud-border);
+      display: block;
+    }
+
+    /* Telemetry grid */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--hud-cyan);
+    }
+
+    .telemetry-cell {
+      border: 1px solid var(--hud-border);
+      border-radius: 3px;
+      padding: 5px 7px;
+      background: rgba(0, 20, 8, 0.5);
+    }
+
+    .telemetry-cell b { color: var(--portal-yellow); font-weight: 700; }
+
+    /* Bottom multimodal command capsule */
+    .command-hub {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .input-capsule {
+      display: flex;
+      background: rgba(2, 20, 9, 0.85);
+      border: 1px solid var(--portal-green);
+      border-radius: 24px;
+      padding: 4px 6px;
+      align-items: center;
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+    }
+
+    .input-capsule input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      padding: 8px 14px;
+    }
+
+    .input-capsule input::placeholder { color: rgba(0, 255, 136, 0.4); }
+
+    .action-icon-btn {
+      background: var(--portal-dim);
+      border: 1px solid var(--portal-green);
+      color: var(--portal-green);
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .action-icon-btn:hover { background: var(--portal-green); color: var(--portal-void); }
+    .action-icon-btn.is-listening {
+      background: var(--hud-alert);
+      border-color: var(--hud-alert);
+      color: #fff;
+      animation: pulse 1s infinite;
+    }
+
+    /* PWA install bar */
+    #pwa-install-bar {
+      display: none;
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 9999;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.6rem 1rem;
+      border: 1px solid #00ff88;
+      border-radius: 10px;
+      background: #020b05;
+      color: #ffd700;
+      font-family: system-ui, sans-serif;
+      box-shadow: 0 0 24px rgba(0, 255, 136, 0.35);
+    }
+
+    #pwa-install-bar button.install {
+      background: #ffd700;
+      color: #000;
+      font-weight: 700;
+      border: 0;
+      border-radius: 6px;
+      padding: 0.45rem 0.9rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    #pwa-install-bar button.dismiss {
+      background: none;
+      border: 0;
+      color: inherit;
+      cursor: pointer;
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    @media (max-width: 460px), (max-height: 620px) {
+      #hud-container { max-width: 100%; max-height: none; border: none; box-shadow: none; }
+      .ui-layer { padding: 10px; gap: 8px; }
+      .terminal-output { min-height: 40px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="hud-container">
+  <!-- Background layer 0: Matrix digital rain -->
+  <canvas id="matrix-canvas"></canvas>
+  <!-- Background layer 1: WebGL portal vortex -->
+  <canvas id="vortex-canvas"></canvas>
+  <div class="scanlines"></div>
+
+  <div class="reticle-corner tl"></div>
+  <div class="reticle-corner tr"></div>
+  <div class="reticle-corner bl"></div>
+  <div class="reticle-corner br"></div>
+
+  <!-- Interactive HUD overlay -->
+  <div class="ui-layer">
+    <!-- Top telemetry -->
+    <div class="telemetry-header">
+      <div class="top-status-bar">
+        <span id="carrier-stat">MESH: SYNCED</span>
+        <span id="time-clock">00:00:00</span>
+        <span id="battery-stat">PWR: 100%</span>
+      </div>
+      <div class="title-row">
+        <h1>Rick C-137 Portal</h1>
+        <span class="badge-active" id="status-badge">ORCHESTRATOR ONLINE</span>
+      </div>
+      <div class="dimension-coords">
+        <span>DIM: C-137</span>
+        <span>RESONANCE: <b id="resonance-val">1207</b> Hz</span>
+        <span>STABILITY: <b id="stability-val">99.87</b>%</span>
+      </div>
+    </div>
+
+    <!-- Central orchestrator holographic card -->
+    <div class="orchestrator-card">
+      <div class="card-header">
+        <span>TWIN PORTAL // TELEMETRY</span>
+        <span id="portal-state-tag">ACTIVE</span>
+      </div>
+      <div class="terminal-output" id="terminal-text">Portal test complete. Structure stable. You're clear to proceed.</div>
+      <canvas id="audio-meter" height="24"></canvas>
+      <div class="telemetry-grid" style="margin-top:10px;">
+        <div class="telemetry-cell">SOE CORE<br><b id="soe-core-stat">LINK PENDING</b></div>
+        <div class="telemetry-cell">MERKLE ROOT<br><b id="merkle-stat">--------</b></div>
+        <div class="telemetry-cell">COHERENCE Γ<br><b id="coherence-stat">0.99998</b></div>
+        <div class="telemetry-cell">ENGINES<br><b id="engine-stat">12 / 12</b></div>
+      </div>
+      <div class="card-actions">
+        <button class="hud-btn" id="btn-fire">FIRE PORTAL</button>
+        <button class="hud-btn" id="btn-pin">PIN</button>
+        <button class="hud-btn" id="btn-audit">SOE AUDIT</button>
+        <button class="hud-btn" id="btn-gist">EXPORT STATE</button>
+        <button class="hud-btn hud-btn-danger" id="btn-reset">COLLAPSE</button>
+      </div>
+    </div>
+
+    <!-- Multimodal command input -->
+    <div class="command-hub">
+      <div class="input-capsule">
+        <input type="text" id="prompt-input" placeholder="Type or speak to your twin..." autocomplete="off" />
+        <button class="action-icon-btn" id="btn-mic" title="Voice Input" aria-label="Voice input">&#127908;</button>
+        <button class="action-icon-btn" id="btn-send" title="Send" aria-label="Send" style="margin-left:4px;">&#10148;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Kyrexis woven PWA install bar -->
+<div id="pwa-install-bar">
+  <span style="font-weight:700">Install Portal C-137</span>
+  <button class="install" onclick="installPWA()">INSTALL</button>
+  <button class="dismiss" onclick="document.getElementById('pwa-install-bar').style.display='none'" aria-label="Dismiss">&#10005;</button>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ======================================================================
+     1. Real-time telemetry & clock
+     ==================================================================== */
+  var clockEl = document.getElementById("time-clock");
+
+  function updateClock() {
+    clockEl.textContent = new Date().toTimeString().split(" ")[0];
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  if (navigator.getBattery) {
+    navigator.getBattery().then(function (battery) {
+      var setBattery = function () {
+        document.getElementById("battery-stat").textContent =
+          "PWR: " + Math.round(battery.level * 100) + "%";
+      };
+      setBattery();
+      battery.addEventListener("levelchange", setBattery);
+    }).catch(function () {});
+  }
+
+  /* ======================================================================
+     2. WebAudio reactor : analyser + synthesized portal FX
+     ==================================================================== */
+  var audioCtx = null;
+  var analyser = null;
+  var audioDataArray = null;
+  var resonanceFreq = 1207;
+  var audioEnabled = true;
+
+  function initAudio() {
+    if (!audioCtx) {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return false;
+      audioCtx = new Ctx();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 64;
+      audioDataArray = new Uint8Array(analyser.frequencyBinCount);
+      analyser.connect(audioCtx.destination);
+    }
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    return true;
+  }
+
+  function playPortalSound(freq, type) {
+    if (!audioEnabled || !initAudio()) return;
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.type = type || "sawtooth";
+    osc.frequency.setValueAtTime(freq || 440, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(
+      (freq || 440) * 2.5,
+      audioCtx.currentTime + 0.3
+    );
+    gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+    osc.connect(gain);
+    gain.connect(analyser);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.35);
+  }
+
+  var meterCanvas = document.getElementById("audio-meter");
+  var meterCtx = meterCanvas.getContext("2d");
+
+  function drawMeter() {
+    requestAnimationFrame(drawMeter);
+    var w = meterCanvas.offsetWidth;
+    var h = meterCanvas.offsetHeight;
+    if (meterCanvas.width !== w) meterCanvas.width = w;
+    if (meterCanvas.height !== h) meterCanvas.height = h;
+
+    meterCtx.fillStyle = "rgba(2, 20, 9, 0.8)";
+    meterCtx.fillRect(0, 0, meterCanvas.width, meterCanvas.height);
+
+    if (analyser && audioDataArray) {
+      analyser.getByteFrequencyData(audioDataArray);
+      var barWidth = meterCanvas.width / audioDataArray.length;
+      var energy = 0;
+      for (var i = 0; i < audioDataArray.length; i++) {
+        var bh = (audioDataArray[i] / 255) * meterCanvas.height;
+        energy += audioDataArray[i];
+        meterCtx.fillStyle = i % 2 === 0 ? "#00ff88" : "#d4ff00";
+        meterCtx.fillRect(i * barWidth, meterCanvas.height - bh, barWidth - 1, bh);
+      }
+      // Feed the vortex shader with normalized audio energy.
+      resonanceLevel = Math.min(1, energy / (255 * audioDataArray.length) * 3);
+    } else {
+      resonanceLevel *= 0.96;
+    }
+  }
+  var resonanceLevel = 0;
+  drawMeter();
+
+  /* ======================================================================
+     3. Matrix digital rain background (layer 0)
+     ==================================================================== */
+  var matrixCanvas = document.getElementById("matrix-canvas");
+  var matrixCtx = matrixCanvas.getContext("2d");
+  var GLYPHS = "アカサタナハマヤラワｦｧｨ0123456789ABCDEF<>/\\|=+*".split("");
+  var columns = [];
+  var fontSize = 13;
+
+  function resizeMatrix() {
+    matrixCanvas.width = matrixCanvas.parentElement.clientWidth;
+    matrixCanvas.height = matrixCanvas.parentElement.clientHeight;
+    var count = Math.floor(matrixCanvas.width / fontSize);
+    columns = new Array(count);
+    for (var i = 0; i < count; i++) {
+      columns[i] = Math.random() * -matrixCanvas.height;
+    }
+  }
+
+  function drawMatrix() {
+    matrixCtx.fillStyle = "rgba(1, 8, 4, 0.10)";
+    matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+    matrixCtx.font = fontSize + "px monospace";
+    for (var i = 0; i < columns.length; i++) {
+      var char = GLYPHS[(Math.random() * GLYPHS.length) | 0];
+      var y = columns[i];
+      matrixCtx.fillStyle = Math.random() > 0.975 ? "#d4ff00" : "#00ff88";
+      matrixCtx.globalAlpha = 0.65;
+      matrixCtx.fillText(char, i * fontSize, y);
+      matrixCtx.globalAlpha = 1;
+      columns[i] = y > matrixCanvas.height + 40 ? 0 : y + fontSize;
+    }
+  }
+  setInterval(drawMatrix, 55);
+
+  /* ======================================================================
+     4. WebGL dimensional portal vortex shader (layer 1)
+     ==================================================================== */
+  var canvas = document.getElementById("vortex-canvas");
+  var gl = canvas.getContext("webgl", { alpha: true, antialias: true });
+
+  function resizeCanvas() {
+    var w = canvas.parentElement.clientWidth;
+    var h = canvas.parentElement.clientHeight;
+    canvas.width = w;
+    canvas.height = h;
+    if (gl) gl.viewport(0, 0, w, h);
+  }
+
+  var vsSource = [
+    "attribute vec2 a_position;",
+    "void main() { gl_Position = vec4(a_position, 0.0, 1.0); }"
+  ].join("\n");
+
+  var fsSource = [
+    "precision highp float;",
+    "uniform vec2 u_resolution;",
+    "uniform float u_time;",
+    "uniform float u_resonance;",
+    "float hash(vec2 p) {",
+    "  p = fract(p * vec2(123.34, 456.21));",
+    "  p += dot(p, p + 45.32);",
+    "  return fract(p.x * p.y);",
+    "}",
+    "float noise(vec2 p) {",
+    "  vec2 i = floor(p);",
+    "  vec2 f = fract(p);",
+    "  f = f * f * (3.0 - 2.0 * f);",
+    "  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),",
+    "             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);",
+    "}",
+    "void main() {",
+    "  vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);",
+    "  float dist = length(uv);",
+    "  float angle = atan(uv.y, uv.x);",
+    "  float warp = 3.2 * sin(dist * 7.0 - u_time * 2.8 + u_resonance * 4.0);",
+    "  float spiral = angle + warp / (dist + 0.18);",
+    "  vec2 p = vec2(dist * 4.0 - u_time * 0.8, spiral * 2.0 / 3.14159);",
+    "  float n = noise(p) * 0.7 + noise(p * 2.5 + u_time * 0.4) * 0.3;",
+    "  vec3 col_core = vec3(0.05, 0.95, 0.35);",
+    "  vec3 col_accent = vec3(0.85, 1.00, 0.40);",
+    "  vec3 col_void = vec3(0.01, 0.04, 0.02);",
+    "  float rim = smoothstep(0.72, 0.22, dist);",
+    "  float glow = exp(-dist * 4.2) * (1.2 + u_resonance * 2.5);",
+    "  vec3 color = mix(col_void, col_core, n * rim) + col_accent * glow;",
+    "  gl_FragColor = vec4(color, 1.0);",
+    "}"
+  ].join("\n");
+
+  var program = null;
+  var uRes = null, uTime = null, uResonance = null;
+
+  if (gl) {
+    var createShader = function (type, source) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, source);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+        console.warn("[vortex] shader error:", gl.getShaderInfoLog(s));
+      }
+      return s;
+    };
+
+    program = gl.createProgram();
+    gl.attachShader(program, createShader(gl.VERTEX_SHADER, vsSource));
+    gl.attachShader(program, createShader(gl.FRAGMENT_SHADER, fsSource));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    var posBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      -1, -1, 1, -1, -1, 1,
+      -1, 1, 1, -1, 1, 1
+    ]), gl.STATIC_DRAW);
+
+    var posAttr = gl.getAttribLocation(program, "a_position");
+    gl.enableVertexAttribArray(posAttr);
+    gl.vertexAttribPointer(posAttr, 2, gl.FLOAT, false, 0, 0);
+
+    uRes = gl.getUniformLocation(program, "u_resolution");
+    uTime = gl.getUniformLocation(program, "u_time");
+    uResonance = gl.getUniformLocation(program, "u_resonance");
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  }
+
+  var startTime = performance.now();
+  function render(now) {
+    if (gl && program) {
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uTime, (now - startTime) * 0.001);
+      gl.uniform1f(uResonance, resonanceLevel + (resonanceFreq - 1207) / 4000);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+
+  function resizeAll() {
+    resizeCanvas();
+    resizeMatrix();
+  }
+  window.addEventListener("resize", resizeAll);
+  resizeAll();
+
+  /* ======================================================================
+     5. HUD interactions
+     ==================================================================== */
+  var terminalText = document.getElementById("terminal-text");
+  var resonanceDisplay = document.getElementById("resonance-val");
+  var stabilityDisplay = document.getElementById("stability-val");
+  var portalStateTag = document.getElementById("portal-state-tag");
+  var typeTimer = null;
+
+  function typeText(msg) {
+    if (typeTimer) clearInterval(typeTimer);
+    terminalText.textContent = "";
+    var i = 0;
+    typeTimer = setInterval(function () {
+      terminalText.textContent += msg.charAt(i++);
+      if (i >= msg.length) {
+        clearInterval(typeTimer);
+        typeTimer = null;
+      }
+    }, 22);
+  }
+
+  document.getElementById("btn-fire").addEventListener("click", function () {
+    playPortalSound(1207, "sawtooth");
+    resonanceFreq = Math.floor(1000 + Math.random() * 800);
+    resonanceDisplay.textContent = resonanceFreq;
+    stabilityDisplay.textContent = (99.4 + Math.random() * 0.59).toFixed(2);
+    portalStateTag.textContent = "FIRING";
+    typeText("Firing fluid injector. Microverse battery discharging at " +
+      resonanceFreq + " Hz. Dimensional rift opened.");
+    setTimeout(function () { portalStateTag.textContent = "ACTIVE"; }, 2500);
+  });
+
+  document.getElementById("btn-pin").addEventListener("click", function () {
+    playPortalSound(880, "sine");
+    var coord = { dimension: "C-137", resonance: resonanceFreq, pinnedAt: new Date().toISOString() };
+    try { localStorage.setItem("portal.c137.pin", JSON.stringify(coord)); } catch (e) {}
+    typeText("Coordinate C-137 [Resonance: " + resonanceFreq +
+      " Hz] pinned to local warp memory.");
+  });
+
+  document.getElementById("btn-reset").addEventListener("click", function () {
+    playPortalSound(180, "triangle");
+    portalStateTag.textContent = "COLLAPSED";
+    stabilityDisplay.textContent = "0.00";
+    typeText("Portal event horizon collapsed. Standing by for recalibration.");
+  });
+
+  document.getElementById("btn-gist").addEventListener("click", function () {
+    var statePayload = {
+      dimension: "C-137",
+      resonance: resonanceFreq,
+      stability: parseFloat(stabilityDisplay.textContent) / 100,
+      soe: { linked: soeLinked, merkleRoot: lastMerkleRoot, coherence: lastCoherence },
+      timestamp: new Date().toISOString()
+    };
+    var blob = new Blob([JSON.stringify(statePayload, null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "portal-c137-" + Date.now() + ".json";
+    a.click();
+    URL.revokeObjectURL(url);
+    typeText("Sovereign snapshot exported to local JSON buffer.");
+  });
+
+  /* ======================================================================
+     6. Sovereign Orchestrator Engine (SOE) gateway bridge
+     ==================================================================== */
+  var soeLinked = false;
+  var lastMerkleRoot = "----------------";
+  var lastCoherence = 0.99998;
+  var SOE_CANDIDATES = [window.location.origin, "http://127.0.0.1:8000"];
+
+  function soeFetch(path, options) {
+    var attempts = SOE_CANDIDATES.map(function (base) {
+      return fetch(base + path, options).then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      });
+    });
+    return Promise.any ? Promise.any(attempts) : Promise.race(attempts);
+  }
+
+  function setSoeState(linked, merkle, coherence, engines) {
+    soeLinked = linked;
+    document.getElementById("soe-core-stat").textContent = linked ? "LINKED" : "OFFLINE";
+    document.getElementById("soe-core-stat").style.color = linked ? "#00ff88" : "#ff0055";
+    if (merkle) {
+      lastMerkleRoot = merkle;
+      document.getElementById("merkle-stat").textContent = merkle.slice(0, 8);
+    }
+    if (typeof coherence === "number") {
+      lastCoherence = coherence;
+      document.getElementById("coherence-stat").textContent = coherence.toFixed(5);
+    }
+    if (engines) document.getElementById("engine-stat").textContent = engines + " / 12";
+  }
+
+  function probeSoe() {
+    soeFetch("/health", { method: "GET" })
+      .then(function (data) {
+        setSoeState(true, data.global_merkle_root, data.coherence, data.engine_count);
+      })
+      .catch(function () { setSoeState(false); });
+  }
+  probeSoe();
+  setInterval(probeSoe, 15000);
+
+  document.getElementById("btn-audit").addEventListener("click", function () {
+    playPortalSound(660, "square");
+    typeText("Dispatching ORC-001 full sovereign system audit...");
+    soeFetch("/orchestrate/action", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-API-Key": "sovereign-portal-c137" },
+      body: JSON.stringify({ action_id: "ORC-001", payload: { source: "portal-hud" } })
+    })
+      .then(function (report) {
+        setSoeState(true, report.global_merkle_root, report.coherence);
+        typeText("SOE audit complete. status=" + report.status +
+          " | engines=12 | merkle=" + String(report.global_merkle_root).slice(0, 16) + "...");
+      })
+      .catch(function () {
+        setSoeState(false);
+        typeText("SOE gateway unreachable. Portal running in standalone offline mode — " +
+          "all local systems nominal.");
+      });
+  });
+
+  /* ======================================================================
+     7. Speech input & command dispatch
+     ==================================================================== */
+  var micBtn = document.getElementById("btn-mic");
+  var promptInput = document.getElementById("prompt-input");
+  var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (SpeechRecognitionCtor) {
+    var recognition = new SpeechRecognitionCtor();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    micBtn.addEventListener("click", function () {
+      playPortalSound(600, "sine");
+      micBtn.classList.add("is-listening");
+      typeText("Listening to inter-dimensional twin audio feed...");
+      try { recognition.start(); } catch (e) {}
+    });
+
+    recognition.onresult = function (event) {
+      var speechResult = event.results[0][0].transcript;
+      promptInput.value = speechResult;
+      typeText('Twin input received: "' + speechResult + '"');
+      playPortalSound(900, "sine");
+    };
+    recognition.onend = function () { micBtn.classList.remove("is-listening"); };
+    recognition.onerror = function () { micBtn.classList.remove("is-listening"); };
+  } else {
+    micBtn.addEventListener("click", function () {
+      typeText("Web Speech API not supported in this client. Type command manually.");
+    });
+  }
+
+  document.getElementById("btn-send").addEventListener("click", dispatch);
+  promptInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") dispatch();
+  });
+
+  function dispatch() {
+    var val = promptInput.value.trim();
+    if (!val) return;
+    playPortalSound(750, "sawtooth");
+    promptInput.value = "";
+    typeText('Dispatched to Orchestrator: "' + val + '"');
+    if (!soeLinked) return;
+    soeFetch("/orchestrate/action", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-API-Key": "sovereign-portal-c137" },
+      body: JSON.stringify({ action_id: "ORC-001", payload: { prompt: val } })
+    })
+      .then(function () { typeText("Orchestrator acknowledged: \"" + val + "\". Merkle state advanced."); })
+      .catch(function () {});
+  }
+
+  /* ======================================================================
+     8. PWA runtime — install prompt + service worker
+     ==================================================================== */
+  var deferredPrompt = null;
+
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    var bar = document.getElementById("pwa-install-bar");
+    if (bar) bar.style.display = "flex";
+  });
+
+  window.installPWA = function () {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function () {
+      deferredPrompt = null;
+      var bar = document.getElementById("pwa-install-bar");
+      if (bar) bar.style.display = "none";
+    });
+  };
+
+  window.addEventListener("appinstalled", function () {
+    var bar = document.getElementById("pwa-install-bar");
+    if (bar) bar.style.display = "none";
+  });
+
+  // Detect a native shell (Android WebView / Tauri / Electron). Inside a shell
+  // the assets are already served from the APK itself, so the service worker is
+  // both unnecessary and a source of cache-coherency bugs.
+  var NATIVE_SHELL = !!(
+    window.SovereignBridge ||
+    window.SovereignAndroidBridge ||
+    window.SovereignElectronBridge ||
+    window.__TAURI_INVOKE__ ||
+    /appassets\.androidplatform\.net$/.test(location.hostname)
+  );
+
+  if (!NATIVE_SHELL &&
+      "serviceWorker" in navigator &&
+      (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js", { scope: "./" }).catch(function () {});
+    });
+  }
+
+  /* ======================================================================
+     9. Native hardware bridge (no-op in the browser)
+     ==================================================================== */
+  function nativeHaptic(intensity) {
+    try {
+      if (window.SovereignBridge && window.SovereignBridge.invokeNativeHardware) {
+        window.SovereignBridge.invokeNativeHardware(
+          "TRIGGER_HAPTIC",
+          JSON.stringify({ intensity: intensity || 1.0 })
+        );
+      }
+    } catch (e) { /* cosmetic only */ }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var fireBtn = document.getElementById("btn-fire");
+    if (fireBtn) {
+      fireBtn.addEventListener("click", function () { nativeHaptic(1.0); });
+    }
+  });
+
+  console.log("%c[PORTAL C-137] Sovereign interface online.", "color:#00ff88;font-weight:bold");
+})();
+</script>
+</body>
+</html>

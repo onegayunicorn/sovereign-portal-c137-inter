@@ -1,0 +1,32 @@
+{
+  "name": "@portal/matrix-protocol",
+  "version": "1.0.0",
+  "description": "Sovereign Portal C-137 — Matrix federation (Olm/Megolm E2EE) + interdimensional twin sync",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/matrix-client.ts",
+    "./twin-sync": "./src/twin-sync.ts"
+  },
+  "files": ["src"],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist .turbo"
+  },
+  "dependencies": {
+    "matrix-js-sdk": "^34.11.0"
+  },
+  "devDependencies": {
+    "@portal/tsconfig": "workspace:*",
+    "@types/node": "^22.10.5",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

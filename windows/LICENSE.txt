@@ -1,0 +1,49 @@
+SOVEREIGN PORTAL C-137
+Copyright (c) 2026 Sovereign Portal Project
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+------------------------------------------------------------------------------
+THIRD-PARTY NOTICES
+
+This distribution bundles or interoperates with the following projects under
+their respective licenses:
+
+  * Python (PSF License) — https://www.python.org/
+  * NumPy (BSD-3-Clause) — https://numpy.org/
+  * FastAPI / Uvicorn (MIT) — https://fastapi.tiangolo.com/
+  * Prisma / Prisma Client (Apache-2.0)
+  * Drizzle ORM (Apache-2.0)
+  * matrix-js-sdk (Apache-2.0)
+  * Ollama and the llama3.3 model weights, subject to the Llama 3.3
+    Community License — https://ollama.com/ and https://llama.meta.com/
+  * NVIDIA CUDA runtime components, subject to the NVIDIA Software License.
+
+PortableApps.com Format (PAF) packaging, where applicable, follows the
+PortableApps.com Format Specification 1.0.
+
+------------------------------------------------------------------------------
+NOTICE
+
+Sovereign Portal C-137 is a fictional, self-contained interface project built
+for offline-first, sovereign personal computing. All persona content is
+fictional. The software makes no external network calls when operated in its
+air-gapped configuration.

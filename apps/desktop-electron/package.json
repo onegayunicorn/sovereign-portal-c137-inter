@@ -1,0 +1,23 @@
+{
+  "name": "@portal/desktop-electron",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Electron desktop shell for Sovereign Portal C-137 (NSIS installer + single-file portable executable)",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "build:ts": "tsc -p tsconfig.json",
+    "start": "npm run build:ts && electron .",
+    "dev": "cross-env NODE_ENV=development npm run build:ts && electron .",
+    "dist": "npm run build:ts && electron-builder --config electron-builder.yml --win",
+    "dist:nsis": "npm run build:ts && electron-builder --config electron-builder.yml --win nsis",
+    "dist:portable": "npm run build:ts && electron-builder --config electron-builder.yml --win portable"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "cross-env": "^7.0.3",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "typescript": "^5.6.2"
+  }
+}

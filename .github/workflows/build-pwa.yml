@@ -1,0 +1,51 @@
+name: Build Sovereign PWA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web-pwa/**"
+      - "apps/web-portal/**"
+      - "packages/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/build-pwa.yml"
+  workflow_dispatch:
+
+jobs:
+  build-pwa:
+    name: Build @portal/web-pwa
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build PWA
+        run: pnpm --filter @portal/web-pwa run build
+
+      - name: Verify offline assets
+        run: |
+          test -f apps/web-pwa/dist/index.html
+          test -f apps/web-pwa/dist/manifest.webmanifest
+          test -f apps/web-pwa/dist/sw.js
+
+      - name: Upload PWA bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: sovereign-pwa
+          path: apps/web-pwa/dist
+          if-no-files-found: error
+          retention-days: 14

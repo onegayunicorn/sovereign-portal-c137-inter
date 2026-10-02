@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Portal C-137</string>
+    <string name="app_full_name">Sovereign Portal C-137</string>
+    <string name="bridge_security_realm">Sovereign Secure Bridge</string>
+    <string name="dimension_default">C-137</string>
+    <string name="resonance_hz">1207</string>
+    <string name="stability_default">99.87</string>
+    <string name="bridge_error_expired">REPLAY_EXPIRED</string>
+    <string name="bridge_error_duplicate_nonce">REPLAY_NONCE_DUPLICATE</string>
+    <string name="bridge_error_invalid_signature">INVALID_SIGNATURE</string>
+    <string name="bridge_error_unknown_command">UNKNOWN_COMMAND</string>
+    <string name="bridge_error_unauthorized_command">UNAUTHORIZED_COMMAND</string>
+    <string name="b2d_agent_label">B2D-Bridge v4.2 Target Agent</string>
+</resources>

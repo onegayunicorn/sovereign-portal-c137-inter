@@ -1,0 +1,68 @@
+# =============================================================================
+# Sovereign Portal C-137 — local / self-hosted stack
+# portal-ui (nginx) + postgres 16 + matrix-dendrite
+# Usage: docker compose -f docker/docker-compose.yml up -d --build
+# =============================================================================
+version: "3.9"
+
+services:
+  portal-ui:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: c137_portal_ui
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    networks:
+      - portal_mesh
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: c137_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: portal_c137
+      POSTGRES_USER: rick
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-wubbalubbadubdub}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - portal_mesh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rick -d portal_c137"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  matrix-dendrite:
+    image: matrixdotorg/dendrite:latest
+    container_name: c137_matrix
+    restart: unless-stopped
+    ports:
+      - "8448:8448"
+    volumes:
+      - matrixdata:/etc/dendrite
+    networks:
+      - portal_mesh
+
+networks:
+  portal_mesh:
+    driver: bridge
+
+volumes:
+  pgdata:
+  matrixdata:

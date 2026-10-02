@@ -1,0 +1,38 @@
+name: Sovereign CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    name: SOE Core — pytest & Merkle audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install numpy pytest fastapi uvicorn httpx
+          if [ -f apps/soe-core/requirements.txt ]; then
+            python -m pip install -r apps/soe-core/requirements.txt
+          fi
+
+      - name: Run test suite
+        env:
+          PYTHONPATH: apps/soe-core
+        run: pytest apps/soe-core/tests -v
+
+      - name: Merkle chain audit
+        env:
+          PYTHONPATH: apps/soe-core
+        run: |
+          python -c "from soe_core import SovereignOrchestratorAgent; a = SovereignOrchestratorAgent(); r = a.run_full_audit(); print(r['global_merkle_root']); assert r['coherence'] >= 0.999"

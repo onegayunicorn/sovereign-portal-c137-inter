@@ -1,0 +1,148 @@
+/* ==========================================================================
+   @portal/ui-core — design tokens
+   Sovereign Portal C-137 // Twin Portal
+   Canonical palette (non-negotiable, per BUILD_MANIFEST.md)
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------- palette --- */
+  --portal-green: #00ff88;
+  --portal-yellow: #d4ff00;
+  --hud-cyan: #00e5ff;
+  --hud-alert: #ff0055;
+  --void: #020b05;
+
+  /* --------------------------------------------------- palette aliases --- */
+  --color-portal-green: var(--portal-green);
+  --color-portal-yellow: var(--portal-yellow);
+  --color-hud-cyan: var(--hud-cyan);
+  --color-hud-alert: var(--hud-alert);
+  --color-void: var(--void);
+
+  /* --------------------------------------------------- derived surfaces --- */
+  --surface-void: #020b05;
+  --surface-panel: rgba(2, 11, 5, 0.72);
+  --surface-panel-solid: rgba(2, 11, 5, 0.94);
+  --surface-elevated: rgba(0, 255, 136, 0.06);
+  --surface-scrim: rgba(1, 8, 4, 0.86);
+
+  /* --------------------------------------------------------- alpha ramp --- */
+  --portal-green-a08: rgba(0, 255, 136, 0.08);
+  --portal-green-a16: rgba(0, 255, 136, 0.16);
+  --portal-green-a35: rgba(0, 255, 136, 0.35);
+  --portal-green-a55: rgba(0, 255, 136, 0.55);
+  --portal-green-a75: rgba(0, 255, 136, 0.75);
+  --portal-yellow-a35: rgba(212, 255, 0, 0.35);
+  --hud-cyan-a35: rgba(0, 229, 255, 0.35);
+  --hud-alert-a35: rgba(255, 0, 85, 0.35);
+
+  /* ------------------------------------------------------------ borders --- */
+  --border-hud: 1px solid var(--portal-green-a35);
+  --border-hud-strong: 1px solid var(--portal-green-a75);
+  --border-hud-cyan: 1px solid var(--hud-cyan-a35);
+  --border-hud-alert: 1px solid var(--hud-alert-a35);
+  --radius-hud: 10px;
+  --radius-hud-sm: 6px;
+  --radius-pill: 999px;
+
+  /* ------------------------------------------------------------- glows --- */
+  --glow-hud: 0 0 18px rgba(0, 255, 136, 0.28);
+  --glow-hud-strong: 0 0 32px rgba(0, 255, 136, 0.45);
+  --glow-cyan: 0 0 20px rgba(0, 229, 255, 0.32);
+  --glow-alert: 0 0 20px rgba(255, 0, 85, 0.35);
+  --text-glow-green: 0 0 12px rgba(0, 255, 136, 0.45);
+  --text-glow-cyan: 0 0 12px rgba(0, 229, 255, 0.45);
+
+  /* ------------------------------------------------------------ typography --- */
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-hud: var(--font-mono);
+  --font-display: "Orbitron", "Rajdhani", var(--font-mono);
+
+  --text-2xs: 0.625rem;  /* 10px */
+  --text-xs: 0.6875rem;  /* 11px */
+  --text-sm: 0.75rem;    /* 12px */
+  --text-md: 0.875rem;   /* 14px */
+  --text-lg: 1rem;       /* 16px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 2rem;      /* 32px */
+
+  --leading-tight: 1.2;
+  --leading-normal: 1.55;
+  --tracking-hud: 0.18em;
+  --tracking-wide: 0.08em;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ---------------------------------------------------------------- space --- */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* --------------------------------------------------------------- shape --- */
+  --hud-gutter: 16px;
+  --hud-header-height: 56px;
+  --hud-capsule-height: 52px;
+  --hud-max-width: 480px;
+  --hud-max-width-desktop: 1280px;
+  --hud-video-aspect: 9 / 16;
+
+  /* --------------------------------------------------------------- motion --- */
+  --dur-instant: 80ms;
+  --dur-fast: 160ms;
+  --dur-normal: 260ms;
+  --dur-slow: 600ms;
+  --dur-sweep: 6s;
+  --ease-hud: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out-hud: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---------------------------------------------------------------- layer --- */
+  --z-vortex: 0;
+  --z-video: 10;
+  --z-canvas-overlay: 20;
+  --z-hud: 30;
+  --z-scanlines: 40;
+  --z-capsule: 50;
+  --z-toast: 60;
+  --z-modal: 70;
+
+  /* ------------------------------------------------------------ telemetry --- */
+  --scanline-opacity: 0.22;
+  --scanline-sweep-duration: 6s;
+  --reticle-size: 96px;
+  --waveform-height: 48px;
+
+  /* ---------------------------------------------------------- fixed specs --- */
+  --dimension-code: "C-137";
+  --resonance-hz: 1207;
+  --stability: 99.87%;
+}
+
+/* ------------------------------------------------------------ dark shell --- */
+.hud-app-shell {
+  background:
+    radial-gradient(circle at 50% 12%, rgba(0, 255, 136, 0.08) 0%, transparent 55%),
+    var(--void);
+  color: var(--portal-green);
+  font-family: var(--font-hud);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-sweep: 0s;
+    --scanline-sweep-duration: 0s;
+  }
+}
